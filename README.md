@@ -13,9 +13,8 @@ Welcome to Groot, a powerful development tool for managing and organizing your p
 - **Documentation Generation**: Automatically generate and maintain project documentation, making it easy to keep your project's information up-to-date and accessible.
 - **Code Review & Feedback**: Streamline the code review process with intuitive tools designed to facilitate thorough reviews and constructive feedback, improving overall code quality.
 
----
-
-This version provides a concise summary of each feature, making it easy to understand the capabilities of Groot at a glance.
+## Working Flow
+![Project Structure](https://phoenixnap.com/kb/wp-content/uploads/2021/09/git-workflow.png)
 
 ## Getting Started
 
