@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-
+//this will directly run the folder in terminal - this will only give read/execute access 
+//this are the immportant libary - that we are required :
 import path from 'path';
 import fs from 'fs/promises';
 import crypto from 'crypto';
@@ -10,7 +11,7 @@ import { Command } from 'commander';
 const program = new Command();
 
 class Groot {
-
+    //creating all the important file and folders -
     constructor(repoPath = '.') {
         this.repoPath = path.join(repoPath, '.groot');
         this.objectsPath = path.join(this.repoPath, 'objects'); // .groot/objects
@@ -19,6 +20,7 @@ class Groot {
         this.init();
     }
 
+    //writing stuff into Head and index file -
     async init() {
         await fs.mkdir(this.objectsPath, {recursive: true});
         try {
@@ -29,9 +31,11 @@ class Groot {
         }
     }
 
+    //This function will take the content and hash it out -
     hashObject(content) {
         return crypto.createHash('sha1').update(content, 'utf-8').digest('hex');
     }
+
 
     async add(fileToBeAdded) {
         // fileToBeAdded: path/to/file
@@ -40,10 +44,12 @@ class Groot {
         console.log(fileHash);
         const newFileHashedObjectPath = path.join(this.objectsPath, fileHash); // .groot/objects/abc123
         await fs.writeFile(newFileHashedObjectPath, fileData);
+        //taking the file , hashing it out and then pushing it into the staging area first -
         await this.updateStagingArea(fileToBeAdded, fileHash);
         console.log(`Added ${fileToBeAdded}`);
 
     }
+    
 
     async updateStagingArea(filePath, fileHash) {
         const index = JSON.parse(await fs.readFile(this.indexPath, { encoding: 'utf-8' })); // read the index file
@@ -52,6 +58,7 @@ class Groot {
     }
 
     async commit(message) {
+        //reading the staging area data -
         const index = JSON.parse(await fs.readFile(this.indexPath, { encoding: 'utf-8' }));
         const parentCommit = await this.getCurrentHead();
 
@@ -62,6 +69,7 @@ class Groot {
             parent: parentCommit
         };
 
+        //when we are done with the commit we clear the staging area and commit it push it into object folder
         const commitHash = this.hashObject(JSON.stringify(commitData));
         const commitPath = path.join(this.objectsPath, commitHash);
         await fs.writeFile(commitPath, JSON.stringify(commitData));
@@ -71,6 +79,7 @@ class Groot {
 
     }
 
+    //this function is give me the current head path -
     async getCurrentHead() {
         try {
             return await fs.readFile(this.headPath, { encoding: 'utf-8' });
@@ -79,6 +88,7 @@ class Groot {
         }
     }
 
+    //starting from the current head keep going to next node and printing it 
     async log() {
         let currentCommitHash = await this.getCurrentHead();;
         while(currentCommitHash) {
@@ -112,14 +122,16 @@ class Groot {
                     const diff = diffLines(getParentFileContent, fileContent);
 
                     // console.log(diff);
-
+                    
+                    //using the diff package and compare parent file content and child file content -
                     diff.forEach(part => {
+                        //in case new file is added 
                         if(part.added) {
                             process.stdout.write(chalk.green("++" + part.value));
-                        } else if(part.removed) {    
+                        } else if(part.removed) {     //in case  file is removed 
                             process.stdout.write(chalk.red("--" + part.value));
                         } else {
-                            process.stdout.write(chalk.grey(part.value));
+                            process.stdout.write(chalk.grey(part.value));   //no change at all
                         }
                     });
                     console.log(); // new line
@@ -161,15 +173,6 @@ class Groot {
 
 }
 
-// (async () => {
-//     const groot = new Groot();
-//     // await groot.add('sample.txt');
-//     // await groot.add('sample2.txt');
-//     // await groot.commit('4th commit');
-
-//     // await groot.log();
-//     await groot.showCommitDiff('7b9d7266145f34073d310f02d42568c6c3213bb4');
-// })();
 
 program.command('init').action(async () => {
     const groot = new Groot();

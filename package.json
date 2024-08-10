@@ -1,17 +1,26 @@
 {
   "name": "groot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Welcome to Groot, a powerful development tool for managing and organizing your projects.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Mohit Panjikar",
   "license": "ISC",
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "diff": "^5.2.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mohitpanjikar/CommitChain.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Mohitpanjikar/CommitChain/issues"
+  },
+  "homepage": "https://github.com/Mohitpanjikar/CommitChain#readme"
 }
